@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Audit log{% endblock %}
+{% block breadcrumb %}Audit log{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> ADMINISTRATOR ONLY</div><h1>Audit log</h1><p>Append-only history of administrative changes and sensitive workflow updates. Summaries intentionally omit clinical and payment credentials.</p></section>
+<section class="panel"><div class="panel-heading"><div><div class="card-eyebrow">RECENT EVENTS</div><h2>{{ events|length }} event{{ '' if events|length == 1 else 's' }} · latest 200</h2></div></div>
+{% if events %}<div class="table-wrap"><table><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Summary</th></tr></thead><tbody>
+{% for event in events %}<tr><td>{{ event.occurred_at.strftime('%b %d, %Y · %I:%M %p') }}</td><td>{{ event.actor_name or ('Account #' ~ event.actor_id if event.actor_id else 'System') }}</td><td>{{ event.action }}</td><td>{{ event.entity_type }} #{{ event.entity_id }}</td><td>{{ event.summary }}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<div class="empty-state"><span class="empty-icon">◷</span><h3>No audit events yet</h3><p>Administrator and workflow changes will be recorded here.</p></div>{% endif %}</section>
+{% endblock %}

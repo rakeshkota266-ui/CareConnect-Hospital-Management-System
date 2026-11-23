@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block public_content %}
+<section class="auth-layout"><div class="auth-aside"><div class="eyebrow"><span class="eyebrow-dot"></span> Start with CareConnect</div><h1>A little more<br><span>peace of mind.</span></h1><p>Create your patient portal account to keep your appointments, care team, and health information together.</p><div class="assurance"><span>✓</span> Free patient account <span>✓</span> Private and secure</div></div>
+  <form class="form-card auth-card" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><div class="card-eyebrow">PATIENT REGISTRATION</div><h2>Create your account</h2><p class="muted">A few details to get your care journey started.</p>
+    <label>Full name<input name="name" autocomplete="name" required maxlength="120" placeholder="Your full name" value="{{ request.form.get('name', '') }}"></label>
+    <label>Email address<input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com" value="{{ request.form.get('email', '') }}"></label>
+    <label>Phone number <span class="optional">(optional)</span><input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Your phone number" value="{{ request.form.get('phone', '') }}"></label>
+    <div class="form-grid"><label>Password<input name="password" type="password" autocomplete="new-password" minlength="10" required placeholder="At least 10 characters"></label><label>Confirm password<input name="confirm_password" type="password" autocomplete="new-password" minlength="10" required placeholder="Enter it again"></label></div>
+    <button class="button button-primary button-full" type="submit">Create patient account <span>→</span></button>
+    <p class="form-foot">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+  </form>
+</section>
+{% endblock %}

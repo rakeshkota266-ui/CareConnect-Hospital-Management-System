@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard{% endblock %}
+{% block breadcrumb %}Admin dashboard{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> HOSPITAL WORKSPACE</div><h1>Administration</h1><p>Manage your people, appointments, medical records, and billing.</p></section>
+<section class="stat-grid" aria-label="Hospital statistics">
+  {% for label, value, icon, tone in stat_cards %}<article class="stat-card"><span class="stat-icon {{ tone }}">{{ icon }}</span><span class="stat-label">{{ label }}</span><strong>{{ value }}</strong><span class="stat-caption">Current database total</span></article>{% endfor %}
+</section>
+<section class="panel activity-panel">
+  <div class="panel-heading"><div><div class="card-eyebrow">RECENT HOSPITAL ACTIVITY</div><h2>Latest updates</h2></div></div>
+  {% if activities %}<div class="activity-list">
+    {% for activity in activities %}<a class="activity-row" href="{{ activity.url }}"><span class="activity-icon">{{ activity.kind[0] }}</span><span class="activity-copy"><strong>{{ activity.kind }}</strong><span>{{ activity.description }}</span></span><span class="activity-meta">{% if activity.status %}<span class="status status-{{ activity.status }}">{{ activity.status|title }}</span>{% endif %}<time datetime="{{ activity.when.isoformat() }}">{{ activity.when.strftime('%b %d, %Y · %I:%M %p') }}</time></span></a>{% endfor %}
+  </div>{% else %}<div class="empty-state"><span class="empty-icon">◷</span><h3>No activity yet</h3><p>Appointments, clinical notes, and invoices will appear here as your team uses CareConnect.</p></div>{% endif %}
+</section>
+<section class="admin-grid">
+  <a class="admin-action" href="{{ url_for('admin.doctors') }}"><span class="admin-action-icon mint">♙</span><span><strong>Add a doctor</strong><small>Register a care professional and make them available for patient appointments.</small></span><b>→</b></a>
+  <a class="admin-action" href="{{ url_for('admin.users') }}"><span class="admin-action-icon mint">♧</span><span><strong>Manage people</strong><small>Create and review patient, doctor, and administrator accounts.</small></span><b>→</b></a>
+  <a class="admin-action" href="{{ url_for('main.patients') }}"><span class="admin-action-icon lilac">♡</span><span><strong>Patient directory</strong><small>Review patient contact and profile information.</small></span><b>→</b></a>
+  <a class="admin-action" href="{{ url_for('appointments.list_appointments') }}"><span class="admin-action-icon peach">▦</span><span><strong>Appointments</strong><small>Review upcoming visits and update their status.</small></span><b>→</b></a>
+  <a class="admin-action" href="{{ url_for('billing.list_invoices') }}"><span class="admin-action-icon blue">▧</span><span><strong>Billing</strong><small>Create invoices and manage payment status.</small></span><b>→</b></a>
+  <a class="admin-action" href="{{ url_for('records.list_records') }}"><span class="admin-action-icon mint">▤</span><span><strong>Medical records</strong><small>Review and correct authorized patient care history.</small></span><b>→</b></a>
+  <a class="admin-action" href="{{ url_for('admin.audit_log') }}"><span class="admin-action-icon blue">◷</span><span><strong>Audit log</strong><small>Review administrator and care-workflow changes.</small></span><b>→</b></a>
+</section>
+<section class="notice-card"><span class="notice-icon">⌑</span><div><strong>Privacy matters</strong><p>Only access patient information needed for your role. Keep account credentials private and sign out on shared devices.</p></div></section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Invoice #INV-{{ '%05d'|format(invoice.id) }}{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('billing.list_invoices') }}">Billing</a> <span>/</span> Invoice copy{% endblock %}
+{% block content %}
+<section class="page-heading heading-row no-print"><div><div class="eyebrow"><span class="eyebrow-dot"></span> INVOICE COPY</div><h1>Invoice #INV-{{ '%05d'|format(invoice.id) }}</h1><p>Review or print this invoice for your records.</p></div><button class="button button-primary" type="button" data-print>Print invoice</button></section>
+<article class="panel invoice-paper">
+  <header class="invoice-header"><div><span class="brand-mark">+</span><h1>CareConnect</h1><p>Hospital Management System</p></div><div class="invoice-heading"><span class="card-eyebrow">INVOICE</span><strong>#INV-{{ '%05d'|format(invoice.id) }}</strong><span class="status status-{{ invoice.status }}">{{ invoice.status|title }}</span></div></header>
+  <div class="invoice-rule"></div>
+  <section class="invoice-parties"><div><span class="card-eyebrow">BILL TO</span><strong>{{ invoice.patient.name }}</strong><span>{{ invoice.patient.email }}</span>{% if invoice.patient.phone %}<span>{{ invoice.patient.phone }}</span>{% endif %}</div><div><span class="card-eyebrow">INVOICE DETAILS</span><span>Issued {{ invoice.issued_at.strftime('%B %d, %Y') }}</span><span>Due {{ invoice.due_date.strftime('%B %d, %Y') if invoice.due_date else 'Not specified' }}</span>{% if invoice.appointment %}<span>Doctor: Dr. {{ invoice.appointment.doctor.name }}</span><span>Visit: {{ invoice.appointment.scheduled_at.strftime('%B %d, %Y · %I:%M %p') }}</span>{% endif %}</div></section>
+  <div class="table-wrap"><table><thead><tr><th>Description</th><th>Amount (USD)</th></tr></thead><tbody><tr><td>{{ invoice.description }}</td><td class="amount">{{ invoice.amount|usd }}</td></tr></tbody></table></div>
+  <div class="invoice-total"><span>Total due</span><strong>{{ invoice.amount|usd }}</strong></div>
+  <p class="invoice-note">Please contact the hospital billing team if you have questions about this invoice.</p>
+</article>
+{% endblock %}

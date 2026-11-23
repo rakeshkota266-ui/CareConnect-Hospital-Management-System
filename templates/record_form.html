@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit medical record' if record else 'Add medical record' }}{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('records.list_records') }}">Medical records</a> <span>/</span> {{ 'Edit record' if record else 'New record' }}{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> CLINICAL DOCUMENTATION</div><h1>{{ 'Edit a medical record' if record else 'Add a medical record' }}</h1><p>{{ 'Update the clinical notes and treatment plan for this patient.' if record else 'Document a patient visit and its treatment plan.' }}</p></section>
+<form class="panel form-panel" method="post" enctype="multipart/form-data"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><div class="card-eyebrow">RECORD DETAILS</div><h2>Visit notes</h2>
+{% if record %}<p class="form-help">Patient: {{ record.patient.name }} · {{ record.patient.email }}</p>
+{% else %}
+<label>Patient<select name="patient_id" required><option value="">Select a patient</option>{% for patient in patients %}<option value="{{ patient.id }}" {{ 'selected' if request.form.get('patient_id') == patient.id|string }}>{{ patient.name }} · {{ patient.email }}</option>{% endfor %}</select></label>
+{% endif %}
+<label>Diagnosis<input name="diagnosis" required maxlength="300" value="{{ request.form.get('diagnosis', record.diagnosis if record else '') }}" placeholder="Primary diagnosis"></label>
+<label>Treatment plan<textarea name="treatment" rows="5" maxlength="10000" required placeholder="Recommended treatment and follow-up plan">{{ request.form.get('treatment', record.treatment if record else '') }}</textarea></label>
+<label>Additional notes <span class="optional">(optional)</span><textarea name="notes" rows="3" maxlength="5000" placeholder="Additional clinical notes">{{ request.form.get('notes', record.notes if record and record.notes else '') }}</textarea></label>
+<label>Document attachments <span class="optional">(optional)</span><input type="file" name="attachments" accept=".pdf,.png,.jpg,.jpeg" multiple><span class="form-help">PDF, PNG, or JPEG; up to 10 MB total per save. Attachments are stored privately.</span></label>
+<div class="form-actions"><a class="button button-outline" href="{{ url_for('records.list_records') }}">Cancel</a><button class="button button-primary">{{ 'Update medical record' if record else 'Save medical record' }} <span>→</span></button></div>
+</form>
+{% endblock %}

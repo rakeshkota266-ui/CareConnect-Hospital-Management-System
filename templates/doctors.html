@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Care team{% endblock %}
+{% block breadcrumb %}Care team{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> PEOPLE WHO CARE FOR YOU</div><h1>Your care team</h1><p>Get to know the professionals supporting your health.</p></section>
+{% if doctors %}<section class="doctor-grid">{% for doctor in doctors %}<article class="doctor-card"><span class="doctor-avatar">{{ doctor.initials }}</span><div class="doctor-info"><span class="card-eyebrow">{{ doctor.doctor_profile.department or doctor.doctor_profile.specialization }}</span><h2>Dr. {{ doctor.name }}</h2><p>{{ doctor.doctor_profile.specialization }} · {{ doctor.doctor_profile.qualification or 'Qualification not provided' }}</p><p>{{ doctor.doctor_profile.experience_years }} years’ experience · {{ doctor.doctor_profile.consultation_fee|usd }} USD consultation</p>{% if doctor.doctor_profile.availability %}<span class="doctor-availability"><span class="green-dot"></span>{{ doctor.doctor_profile.availability }}</span>{% endif %}</div>{% if current_role == 'patient' %}<a class="text-link" href="{{ url_for('appointments.create_appointment') }}">Book a visit <span>→</span></a>{% endif %}</article>{% endfor %}</section>{% else %}<section class="panel empty-state"><span class="empty-icon">♙</span><h3>Your care team is growing</h3><p>Doctors added by your hospital will appear here. Please contact the hospital administrator if you need help booking a visit.</p></section>{% endif %}
+{% endblock %}

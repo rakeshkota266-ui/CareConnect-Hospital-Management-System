@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}People{% endblock %}
+{% block breadcrumb %}People{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> TEAM &amp; PATIENT ACCOUNTS</div><h1>People</h1><p>Create and review accounts for your hospital community.</p></section>
+<div class="admin-users-layout">
+<form class="panel compact-form" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><div class="card-eyebrow">NEW ACCOUNT</div><h2>Add a person</h2>
+<label>Full name<input name="name" required maxlength="120" value="{{ request.form.get('name', '') }}" placeholder="Full name"></label>
+<label>Email address<input name="email" type="email" required maxlength="255" value="{{ request.form.get('email', '') }}" placeholder="name@example.com"></label>
+<label>Phone <span class="optional">(optional)</span><input name="phone" type="tel" maxlength="30" placeholder="Phone number"></label>
+<label>Role<select name="role" required data-role-select><option value="patient">Patient</option><option value="doctor">Doctor</option><option value="admin">Administrator</option></select></label>
+<div class="doctor-fields" data-doctor-fields hidden><label>Specialization<input name="specialization" maxlength="120" placeholder="e.g. Cardiology"></label><label>Qualification<input name="qualification" maxlength="160" placeholder="e.g. MD, FACC"></label><label>Experience (years)<input name="experience_years" type="number" min="0" max="80" step="1" placeholder="Whole years, 0–80"></label><label>Consultation fee (USD)<input name="consultation_fee" type="number" min="0" max="99999999.99" step="0.01" placeholder="0.00"></label><label>Department<input name="department" maxlength="120" placeholder="e.g. Heart &amp; Vascular"></label><label>License number<input name="license_number" maxlength="80" placeholder="Professional license"></label></div>
+<label>Temporary password<input name="password" type="password" minlength="10" required autocomplete="new-password" placeholder="At least 10 characters"></label>
+<button class="button button-primary button-full">Create account <span>→</span></button><p class="form-help">Share the temporary password securely and ask the user to change it.</p></form>
+<section class="panel people-panel"><div class="panel-heading"><div><div class="card-eyebrow">ALL ACCOUNTS</div><h2>{{ users|length }} people</h2></div></div><div class="table-wrap"><table><thead><tr><th>Person</th><th>Role</th><th>Joined</th></tr></thead><tbody>
+{% for person in users %}<tr><td><span class="person-cell"><span class="avatar avatar-small">{{ person.initials }}</span><span><span class="table-primary">{{ person.name }}</span><span class="table-secondary">{{ person.email }}</span></span></span></td><td><span class="role-badge role-{{ person.role }}">{{ person.role|title }}</span></td><td>{{ person.created_at.strftime('%b %d, %Y') }}</td></tr>{% else %}<tr><td colspan="3" class="table-empty">No accounts have been created.</td></tr>{% endfor %}
+</tbody></table></div></section></div>
+{% endblock %}

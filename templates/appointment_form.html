@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Book an appointment{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('appointments.list_appointments') }}">Appointments</a> <span>/</span> New visit{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> PLAN YOUR NEXT VISIT</div><h1>Book an appointment</h1><p>Tell us what you need and choose the care professional you’d like to see.</p></section>
+<form class="panel form-panel" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><div class="card-eyebrow">VISIT DETAILS</div><h2>Let’s find a time for your care</h2>
+{% if doctors %}<label>Choose a doctor<select name="doctor_id" required><option value="">Select a care professional</option>{% for doctor in doctors %}<option value="{{ doctor.id }}" {{ 'selected' if request.form.get('doctor_id') == doctor.id|string }}>Dr. {{ doctor.name }} · {{ doctor.doctor_profile.specialization }} · {{ doctor.doctor_profile.qualification or 'Qualification not provided' }} · {{ doctor.doctor_profile.experience_years }} yr experience · {{ doctor.doctor_profile.consultation_fee|usd }} USD{% if doctor.doctor_profile.department and doctor.doctor_profile.department != doctor.doctor_profile.specialization %} · {{ doctor.doctor_profile.department }}{% endif %}</option>{% endfor %}</select><span class="form-help">Consultation fees are shown for reference. Please confirm availability with the hospital.</span></label>
+<label>Date and time<input name="scheduled_at" type="datetime-local" required data-future-date value="{{ request.form.get('scheduled_at', '') }}"></label>
+<label>What would you like help with?<textarea name="reason" rows="4" maxlength="500" required placeholder="A short note helps your care team prepare.">{{ request.form.get('reason', '') }}</textarea></label>
+<div class="form-actions"><a class="button button-outline" href="{{ url_for('appointments.list_appointments') }}">Cancel</a><button class="button button-primary">Request appointment <span>→</span></button></div>
+{% else %}<div class="empty-state"><span class="empty-icon">♙</span><h3>No doctors are available yet</h3><p>Your hospital has not added a doctor to the appointment directory. Please check back later or contact the hospital administrator for help.</p><a class="button button-outline" href="{{ url_for('main.dashboard') }}">Back to overview</a></div>{% endif %}
+</form>
+{% endblock %}

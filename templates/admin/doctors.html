@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Add a doctor{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('admin.dashboard') }}">Admin dashboard</a> <span>/</span> Doctors{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> CARE TEAM MANAGEMENT</div><h1>Add a doctor</h1><p>Create a doctor account and make the care professional available for patient appointments.</p></section>
+<div class="admin-users-layout">
+  <form class="panel compact-form" method="post" autocomplete="off">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <div class="card-eyebrow">DOCTOR DETAILS</div><h2>New care professional</h2>
+    <label>Doctor name<input name="name" required maxlength="120" value="{{ request.form.get('name', '') }}" placeholder="Full name"></label>
+    <label>Email address<input name="email" type="email" required maxlength="255" value="{{ request.form.get('email', '') }}" placeholder="doctor@example.com"></label>
+    <label>Specialization<input name="specialization" required maxlength="120" value="{{ request.form.get('specialization', '') }}" placeholder="e.g. Cardiology"></label>
+    <label>Qualification<input name="qualification" required maxlength="160" value="{{ request.form.get('qualification', '') }}" placeholder="e.g. MD, FACC"></label>
+    <label>Experience (years)<input name="experience_years" type="number" inputmode="numeric" autocomplete="off" min="0" max="80" step="1" required value="{{ request.form.get('experience_years', '') }}" placeholder="Whole years, 0–80"></label>
+    <label>Consultation fee (USD)<div class="currency-input"><span>$</span><input name="consultation_fee" type="number" inputmode="decimal" autocomplete="off" min="0" max="99999999.99" step="0.01" required value="{{ request.form.get('consultation_fee', '') }}" placeholder="0.00"></div><span class="form-help">Enter a USD amount with up to two decimal places. The saved value is shown below.</span></label>
+    <details class="optional-details"><summary>Additional account details</summary>
+      <label>Department <span class="optional">(defaults to specialization)</span><input name="department" maxlength="120" value="{{ request.form.get('department', '') }}" placeholder="Department"></label>
+      <label>Phone <span class="optional">(optional)</span><input name="phone" type="tel" maxlength="30" value="{{ request.form.get('phone', '') }}" placeholder="Phone number"></label>
+    </details>
+    <label>Temporary password<input name="password" type="password" minlength="10" required autocomplete="new-password" placeholder="At least 10 characters"></label>
+    <button class="button button-primary button-full" type="submit">Add doctor <span>→</span></button>
+    <p class="form-help">A private staff reference is generated automatically. Share the temporary password securely with the doctor.</p>
+  </form>
+
+  <section class="panel people-panel">
+    <div class="panel-heading"><div><div class="card-eyebrow">REGISTERED CARE TEAM</div><h2>{{ doctors|length }} doctor{{ '' if doctors|length == 1 else 's' }}</h2></div></div>
+    {% if doctors %}
+    <div class="table-wrap"><table><thead><tr><th>Doctor</th><th>Specialization</th><th>Experience</th><th>Consultation fee (USD)</th><th></th></tr></thead><tbody>
+      {% for doctor in doctors %}
+      <tr>
+        <td><span class="table-primary">{{ doctor.name }}</span><span class="table-secondary">{{ doctor.email }}</span></td>
+        <td><span class="table-primary">{{ doctor.doctor_profile.specialization }}</span><span class="table-secondary">{{ doctor.doctor_profile.qualification or 'Qualification not provided' }}</span></td>
+        <td>{{ doctor.doctor_profile.experience_years }} year{{ '' if doctor.doctor_profile.experience_years == 1 else 's' }}</td>
+        <td>{{ doctor.doctor_profile.consultation_fee|usd }}</td>
+        <td><a class="text-link" href="{{ url_for('admin.edit_doctor', user_id=doctor.id) }}">Edit</a></td>
+      </tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% else %}
+    <div class="empty-state"><span class="empty-icon">♙</span><h3>No doctors registered yet</h3><p>Add your first doctor with the form. Once saved, patients can select them when booking an appointment.</p></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Medical records{% endblock %}
+{% block breadcrumb %}Medical records{% endblock %}
+{% block content %}
+<section class="page-heading heading-row"><div><div class="eyebrow"><span class="eyebrow-dot"></span> YOUR HEALTH HISTORY</div><h1>Medical records</h1><p>Important notes from your visits, kept together.</p></div>{% if current_role == 'doctor' %}<a class="button button-primary" href="{{ url_for('records.create_record') }}">＋ Add a record</a>{% endif %}</section>
+<section class="panel"><div class="panel-heading"><div><div class="card-eyebrow">CLINICAL NOTES</div><h2>{{ records|length }} record{{ '' if records|length == 1 else 's' }}</h2></div></div>
+{% if records %}<div class="table-wrap"><table><thead><tr><th>Record</th>{% if current_role != 'patient' %}<th>Patient</th>{% endif %}<th>Care professional</th><th>Recorded</th><th></th></tr></thead><tbody>
+{% for record in records %}<tr><td><span class="table-primary">{{ record.diagnosis }}</span><span class="table-secondary">{{ record.treatment|truncate(58) }}</span></td>{% if current_role != 'patient' %}<td>{{ record.patient.name }}</td>{% endif %}<td>Dr. {{ record.doctor.name }}</td><td>{{ record.recorded_at.strftime('%b %d, %Y') }}</td><td><a class="text-link" href="{{ url_for('records.detail', record_id=record.id) }}">View <span>→</span></a>{% if current_role in ['admin', 'doctor'] %} · <a class="text-link" href="{{ url_for('records.edit_record', record_id=record.id) }}">Edit</a>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<div class="empty-state"><span class="empty-icon">▤</span><h3>No records to show yet</h3><p>Visit notes and care information will be added by your care team.</p></div>{% endif %}</section>
+{% endblock %}

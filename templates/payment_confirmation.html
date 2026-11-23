@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Demo payment confirmation{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('billing.list_invoices') }}">Billing</a> <span>/</span> Demo payment{% endblock %}
+{% block content %}
+<section class="panel payment-confirmation">
+  <span class="empty-icon">✓</span>
+  <div class="eyebrow"><span class="eyebrow-dot"></span> DEMONSTRATION ONLY</div>
+  <h1>Payment simulation complete</h1>
+  <p>No real payment was processed and no card or bank details were collected.</p>
+  <dl><div><dt>Invoice</dt><dd>#INV-{{ '%05d'|format(payment.invoice_id) }}</dd></div><div><dt>Simulated amount</dt><dd>{{ payment.amount|usd }} USD</dd></div><div><dt>Demo reference</dt><dd>{{ payment.reference }}</dd></div><div><dt>Status</dt><dd><span class="status status-paid">Paid · Demo</span></dd></div></dl>
+  <div class="form-actions"><a class="button button-outline" href="{{ url_for('billing.print_invoice', invoice_id=payment.invoice_id) }}">View invoice</a><a class="button button-primary" href="{{ url_for('billing.list_invoices') }}">Back to billing</a></div>
+</section>
+{% endblock %}

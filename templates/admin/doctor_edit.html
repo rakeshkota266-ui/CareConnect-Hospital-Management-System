@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Edit doctor{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('admin.dashboard') }}">Admin dashboard</a> <span>/</span> <a href="{{ url_for('admin.doctors') }}">Doctors</a> <span>/</span> Edit{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> CARE TEAM MANAGEMENT</div><h1>Edit doctor</h1><p>Update the saved profile for {{ doctor.name }}. Existing appointments and records are not changed.</p></section>
+<form class="panel form-panel" method="post" autocomplete="off">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+  <div class="card-eyebrow">DOCTOR DETAILS</div><h2>Profile and consultation fee</h2>
+  <label>Doctor name<input name="name" required maxlength="120" value="{{ request.form.get('name', doctor.name) }}"></label>
+  <label>Email address<input name="email" type="email" required maxlength="255" value="{{ request.form.get('email', doctor.email) }}"></label>
+  <label>Specialization<input name="specialization" required maxlength="120" value="{{ request.form.get('specialization', doctor.doctor_profile.specialization) }}"></label>
+  <label>Qualification<input name="qualification" required maxlength="160" value="{{ request.form.get('qualification', doctor.doctor_profile.qualification or '') }}"></label>
+  <label>Experience (years)<input name="experience_years" type="number" inputmode="numeric" autocomplete="off" min="0" max="80" step="1" required value="{{ request.form.get('experience_years', doctor.doctor_profile.experience_years) }}"></label>
+  <label>Consultation fee (USD)<div class="currency-input"><span>$</span><input name="consultation_fee" type="number" inputmode="decimal" autocomplete="off" min="0" max="99999999.99" step="0.01" required value="{{ request.form.get('consultation_fee', '%.2f'|format(doctor.doctor_profile.consultation_fee)) }}"></div><span class="form-help">Enter a USD amount with up to two decimal places.</span></label>
+  <label>Department<input name="department" maxlength="120" value="{{ request.form.get('department', doctor.doctor_profile.department) }}"></label>
+  <label>Phone<input name="phone" type="tel" maxlength="30" value="{{ request.form.get('phone', doctor.phone or '') }}"></label>
+  <div class="form-actions"><a class="button button-outline" href="{{ url_for('admin.doctors') }}">Cancel</a><button class="button button-primary">Save doctor details <span>→</span></button></div>
+</form>
+{% endblock %}

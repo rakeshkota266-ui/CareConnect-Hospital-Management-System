@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}My profile{% endblock %}
+{% block breadcrumb %}My profile{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow"><span class="eyebrow-dot"></span> YOUR ACCOUNT</div><h1>My profile</h1><p>Keep your contact details and profile information current.</p></section>
+<form class="panel form-panel" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><div class="card-eyebrow">PERSONAL INFORMATION</div><h2>Account details</h2>
+<label>Full name<input name="name" required maxlength="120" value="{{ request.form.get('name', current_user.name) }}"></label>
+<label>Email address<input type="email" value="{{ current_user.email }}" disabled><span class="form-help">Contact your hospital administrator if your email address needs to change.</span></label>
+<label>Phone number<input name="phone" type="tel" maxlength="30" value="{{ request.form.get('phone', current_user.phone or '') }}" placeholder="Phone number"></label>
+<details class="optional-details"><summary>Change password</summary><div class="form-grid"><label>Current password<input name="current_password" type="password" autocomplete="current-password"></label><label>New password<input name="new_password" type="password" autocomplete="new-password" minlength="10"></label></div><label>Confirm new password<input name="confirm_password" type="password" autocomplete="new-password" minlength="10"></label></details>
+{% if current_user.patient_profile %}
+<div class="divider"></div><div class="card-eyebrow">PATIENT INFORMATION</div>
+<label>Date of birth<input name="date_of_birth" type="date" value="{{ request.form.get('date_of_birth', current_user.patient_profile.date_of_birth.isoformat() if current_user.patient_profile.date_of_birth else '') }}"></label>
+<div class="form-grid"><label>Gender<select name="gender"><option value="">Prefer not to say</option>{% for option in ['Woman', 'Man', 'Non-binary', 'Other'] %}<option value="{{ option }}" {{ 'selected' if request.form.get('gender', current_user.patient_profile.gender or '') == option }}>{{ option }}</option>{% endfor %}</select></label>
+<label>Blood group<select name="blood_group"><option value="">Not provided</option>{% for option in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %}<option value="{{ option }}" {{ 'selected' if request.form.get('blood_group', current_user.patient_profile.blood_group or '') == option }}>{{ option }}</option>{% endfor %}</select></label></div>
+<label>Address<textarea name="address" rows="2" maxlength="300" placeholder="Your home address">{{ request.form.get('address', current_user.patient_profile.address or '') }}</textarea></label>
+<label>Emergency contact<input name="emergency_contact" maxlength="120" value="{{ request.form.get('emergency_contact', current_user.patient_profile.emergency_contact or '') }}" placeholder="Name and phone number"></label>
+{% elif current_user.doctor_profile %}<div class="divider"></div><div class="card-eyebrow">CARE TEAM PROFILE</div><p class="form-help">Dr. {{ current_user.name }} · {{ current_user.doctor_profile.specialization }} · {{ current_user.doctor_profile.qualification }}</p><label>Availability<input name="availability" maxlength="200" value="{{ request.form.get('availability', current_user.doctor_profile.availability or '') }}" placeholder="e.g. Mon–Fri, 9 AM–4 PM"></label><p class="form-help">Credentials, experience, and consultation fees are managed by your hospital administrator.</p>{% endif %}
+<div class="form-actions"><button class="button button-primary">Save profile <span>→</span></button></div>
+</form>
+{% endblock %}

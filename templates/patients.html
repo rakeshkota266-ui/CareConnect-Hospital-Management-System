@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Patients{% endblock %}
+{% block breadcrumb %}Patients{% endblock %}
+{% block content %}
+<section class="page-heading heading-row"><div><div class="eyebrow"><span class="eyebrow-dot"></span> PATIENT DIRECTORY</div><h1>Patients</h1><p>Patient accounts and contact information.</p></div><a class="button button-primary" href="{{ url_for('admin.users') }}">＋ Add patient</a></section>
+<section class="panel"><div class="table-wrap"><table><thead><tr><th>Patient</th><th>Email</th><th>Phone</th><th>Blood group</th><th>Member since</th></tr></thead><tbody>
+{% for patient in patients %}<tr><td><span class="person-cell"><span class="avatar avatar-small">{{ patient.initials }}</span>{{ patient.name }}</span></td><td>{{ patient.email }}</td><td>{{ patient.phone or '—' }}</td><td>{{ patient.patient_profile.blood_group if patient.patient_profile and patient.patient_profile.blood_group else '—' }}</td><td>{{ patient.created_at.strftime('%b %d, %Y') }}</td></tr>{% else %}<tr><td colspan="5" class="table-empty">No patient accounts yet.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}
